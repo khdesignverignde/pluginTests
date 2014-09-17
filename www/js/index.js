@@ -34,6 +34,10 @@ var app = {
         document.getElementById('vibration').addEventListener('click', this.vibration, false);
         document.getElementById('geolocation').addEventListener('click', this.geolocation, false);
         document.getElementById('inappbrowser').addEventListener('click', this.inappbrowser, false);
+        document.getElementById('notificationAlert').addEventListener('click', this.notificationAlert, false);
+        document.getElementById('notificationConfirm').addEventListener('click', this.notificationConfirm, false);
+        document.getElementById('notificationPrompt').addEventListener('click', this.notificationPrompt, false);
+        document.getElementById('notificationBeep').addEventListener('click', this.notificationBeep, false);
         $('#input .save').on('click', this.input.save);
         $('#input .load').on('click', this.input.load);
     },
@@ -54,11 +58,16 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
         
         //muss in device ready
-        window.addEventListener('pause', this.onpause, false);
-        window.addEventListener('backbutton', this.onbackbutton, false);
-        window.addEventListener('menubutton', this.onmenubutton, false);
+        document.addEventListener('pause', this.onpause, false);
+        document.addEventListener('resume', this.onresume, false);
+        document.addEventListener('backbutton', this.onbackbutton, false);
+        document.addEventListener('menubutton', this.onmenubutton, false);
         window.addEventListener('batterystatus', this.batterystatus, false);
-
+        
+        var watchIDAcc = navigator.accelerometer.watchAcceleration(this.accelerometerSuccess, this.accelerometerError, { frequency: 1000 });
+        
+        var watchIDComp = navigator.compass.watchHeading(this.compassSuccess, this.compassError);
+        
         console.log('Received Event: ' + id);
         
     },
@@ -215,6 +224,10 @@ var app = {
         console.log('pause');
         app.output.string('pause');
     },
+    onresume: function(){
+        console.log('resume');
+        app.output.string('resume');
+    },
     onbackbutton: function(){
         console.log('backbutton');
         alert('you sure?');
@@ -222,5 +235,61 @@ var app = {
     onmenubutton: function(){
         console.log('menu');
         app.output.string('menu');
-    }
+    },
+    notificationAlert: function(){
+        
+        navigator.notification.alert(
+            'You will dismiss this',  // message
+            function(){
+                 app.output.string('alert dismissed');
+            },         // callback
+            'ALERT',            // title
+            'OK'                  // buttonName
+        );
+    },
+    notificationConfirm: function(){
+        
+        navigator.notification.confirm(
+            'Now you have Options', // message
+             function(buttonIndex){
+                app.output.string('You selected button with index ' + buttonIndex);
+             },            // callback to invoke with index of button pressed
+            'CONFIRM',           // title
+            ['OK','NOT OK', 'Secret Option']     // buttonLabels
+        );
+    },
+    notificationPrompt: function(){
+        
+        navigator.notification.prompt(
+            'Please enter your name',  // message
+            function(results){
+                app.output.objectProperties(results, 'notificationPrompt - results')
+            },                  // callback to invoke
+            'PROMPT',            // title
+            ['Ok','Exit'],             // buttonLabels
+            'default text'                 // defaultText
+        );
+    },
+    notificationBeep: function(){
+        navigator.notification.beep(2);
+    },
+    accelerometerSuccess: function(acceleration){
+        var str = 'Acceleration X: ' + acceleration.x + ' | ' +
+                'Acceleration Y: ' + acceleration.y + ' | ' +
+                'Acceleration Z: ' + acceleration.z + ' | ' +
+                'Timestamp: '      + acceleration.timestamp;
+        
+        $('#acceleration').text(str);
+    },
+    accelerometerError: function(){
+        $('#acceleration').text('error');
+    },
+    compassSuccess: function(heading){
+        var str = 'Heading: ' + heading.magneticHeading;
+        $('#orientation').text(str);
+        
+    },
+    compassError: function(){
+        $('#orientation').text('error');
+    },
 };
