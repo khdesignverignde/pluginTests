@@ -54,9 +54,13 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
         
         //muss in device ready
+        window.addEventListener('pause', this.onpause, false);
+        window.addEventListener('backbutton', this.onbackbutton, false);
+        window.addEventListener('menubutton', this.onmenubutton, false);
         window.addEventListener('batterystatus', this.batterystatus, false);
 
         console.log('Received Event: ' + id);
+        
     },
     output: {
         _el: $('#output'),
@@ -183,19 +187,40 @@ var app = {
     },
     geolocation: function(){
         navigator.geolocation.getCurrentPosition(
-                function(position){
-                    app.output.objectProperties(position, 'geolocation');
-                },
-                function(error){
-                    alert('code: '    + error.code    + '\n' +
-                          'message: ' + error.message + '\n');
-                }
-            );
+            function(position){
+                
+                alert('Latitude: '          + position.coords.latitude          + '\n' +
+                      'Longitude: '         + position.coords.longitude         + '\n' +
+                      'Altitude: '          + position.coords.altitude          + '\n' +
+                      'Accuracy: '          + position.coords.accuracy          + '\n' +
+                      'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+                      'Heading: '           + position.coords.heading           + '\n' +
+                      'Speed: '             + position.coords.speed             + '\n' +
+                      'Timestamp: '         + position.timestamp                + '\n');
+                app.output.objectProperties(position, 'geolocation');
+            },
+            function(error){
+                alert('code: '    + error.code    + '\n' +
+                      'message: ' + error.message + '\n');
+            }
+        );
     },
     inappbrowser: function(){
         var ref = window.open('http://google.com', '_blank', 'location=no');
     },
     batterystatus: function(info){
         app.output.objectProperties(info, 'battery-status');
+    },
+    onpause: function(){
+        console.log('pause');
+        app.output.string('pause');
+    },
+    onbackbutton: function(){
+        console.log('backbutton');
+        alert('you sure?');
+    },
+    onmenubutton: function(){
+        console.log('menu');
+        app.output.string('menu');
     }
 };
