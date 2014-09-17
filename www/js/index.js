@@ -38,6 +38,7 @@ var app = {
         document.getElementById('notificationConfirm').addEventListener('click', this.notificationConfirm, false);
         document.getElementById('notificationPrompt').addEventListener('click', this.notificationPrompt, false);
         document.getElementById('notificationBeep').addEventListener('click', this.notificationBeep, false);
+        document.getElementById('showSplashscreen').addEventListener('click', this.showSplashscreen, false);
         $('#input .save').on('click', this.input.save);
         $('#input .load').on('click', this.input.load);
     },
@@ -292,4 +293,13 @@ var app = {
     compassError: function(){
         $('#orientation').text('error');
     },
+    showSplashscreen:function(){
+        console.log('showSplashscreen');
+        
+        navigator.splashscreen.show();
+        setTimeout(function() {
+            navigator.splashscreen.hide();
+        }, 2000);
+        
+    }
 };
