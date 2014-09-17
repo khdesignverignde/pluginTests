@@ -31,6 +31,9 @@ var app = {
         document.getElementById('camera').addEventListener('click', this.camera, false);
         document.getElementById('device').addEventListener('click', this.device, false);
         document.getElementById('network-information').addEventListener('click', this.networkInformation, false);
+        document.getElementById('vibration').addEventListener('click', this.vibration, false);
+        document.getElementById('geolocation').addEventListener('click', this.geolocation, false);
+        document.getElementById('inappbrowser').addEventListener('click', this.inappbrowser, false);
         $('#input .save').on('click', this.input.save);
         $('#input .load').on('click', this.input.load);
     },
@@ -49,42 +52,49 @@ var app = {
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
+        
+        //muss in device ready
+        window.addEventListener('batterystatus', this.batterystatus, false);
 
         console.log('Received Event: ' + id);
     },
     output: {
         _el: $('#output'),
+        clear: function(){
+            this._el.html('');
+        },
         objectProperties: function(obj, name){
             if(!name) name = 'object';
             
-            var str = '<br><br>' + name + ':<br>---------------------------------------------------------<br>';
+            var str = name + ':<br>---------------------------------------------------------<br>';
             
             for(var i in obj){
                 str += i + ': ' + obj[i] + '<br>';
             }
             
+            str += '<br><br>';
+            
             this._el.html(str + this._el.html());
         },
-        string: function(str){
-            str += '<br><br>string:<br>---------------------------------------------------------<br>';
+        string: function(s){
+            console.log(typeof str);
+            var str = 'string:<br>---------------------------------------------------------<br>' + s+ '<br><br>';
             this._el.html(str + this._el.html());
         }
     },
     storage: function(name, method, obj){
         if(!method) method = 'save';
-        
-        var storage = window.localStorage;
+       
         
         switch(method){
             case 'show':
-                app.output
                 break;
             case 'remove':
-                storage.removeItem(name);
+                window.localStorage.removeItem(name);
                 return true;
                 break;
             case 'load':
-                var item = storage.getItem(name);
+                var item = window.localStorage.getItem(name);
                 
                 if(item){
                     return item;
@@ -94,21 +104,21 @@ var app = {
                 break;
             default:
             case 'save':
-//                var exists = false;
-//                if(storage.getItem(name)) exists = true;
+                var exists = false;
+                if(window.localStorage.getItem(name)) exists = true;
                 
-                storage.setItem(name, obj);
+                window.localStorage.setItem(name, obj);
         }
         
     },
     input:{
-        _el: $('#input textarea'),
-        load: function(){
-            
+        _el: null,
+        init: function(){
+            this._el = $('#inputTextarea');
         },
         save: function(){
-            var val = this._el.val();
-            
+            this._el = $('#inputTextarea');
+            var val = this._el.get(0).value;
             app.storage('input', 'save', val);
         },
         load: function(){
@@ -128,14 +138,10 @@ var app = {
             alert("We got a barcode\n" + 
             "Result: " + result.text + "\n" + 
             "Format: " + result.format + "\n" + 
-            "Cancelled: " + result.cancelled);  
-
-           console.log("Scanner result: \n" +
-                "text: " + result.text + "\n" +
-                "format: " + result.format + "\n" +
-                "cancelled: " + result.cancelled + "\n");
-            document.getElementById("info").innerHTML = result.text;
-            console.log(result);
+            "Cancelled: " + result.cancelled); 
+            
+            app.output.objectProperties(result, 'scanner.scan().result)');
+            
             /*
             if (args.format == "QR_CODE") {
                 window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
@@ -143,7 +149,7 @@ var app = {
             */
 
         }, function (error) { 
-            console.log("Scanning failed: ", error); 
+            alert("Scanning failed: ", error); 
         } );
     },
     camera: function(){
@@ -155,19 +161,41 @@ var app = {
             }, 
             //fail
             function (message) {
-                alert('Failed because: ' + message);
+                alert('Camera failed: ' + message);
             },
             //options
             { 
                 quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL 
+                destinationType: Camera.DestinationType.DATA_URL,
+                correctOrientation: true,
+                saveToPhotoAlbum: true
             }
         );
     },
     device: function(){
-        app.output.objectProperties(device);
+        app.output.objectProperties(device, 'device');
     },
     networkInformation: function(){
-        app.output.objectProperties(navigator.connection);
+        app.output.objectProperties(navigator.connection, 'navigator.connection');
+    },
+    vibration: function(){
+        navigator.notification.vibrate(1000); 
+    },
+    geolocation: function(){
+        navigator.geolocation.getCurrentPosition(
+                function(position){
+                    app.output.objectProperties(position, 'geolocation');
+                },
+                function(error){
+                    alert('code: '    + error.code    + '\n' +
+                          'message: ' + error.message + '\n');
+                }
+            );
+    },
+    inappbrowser: function(){
+        var ref = window.open('http://google.com', '_blank', 'location=no');
+    },
+    batterystatus: function(info){
+        app.output.objectProperties(info, 'battery-status');
     }
 };
