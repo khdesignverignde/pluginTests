@@ -113,3 +113,15 @@ h1 {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
 }
+
+img#photo{
+    display: block;
+    width: 400px;
+    height: 400px;
+}
+
+
+div[data-role="header"],
+div[data-role="footer"]{
+    height: 50px;
+}
