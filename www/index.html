@@ -26,20 +26,52 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.3.min.css" />
+        
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
+        
+        <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile-1.4.3.min.js" type="text/javascript"></script>
+        <title>PhoneGap + JQMobile</title>
     </head>
     <body>
-        <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+        
+        
+        <div data-role="page" id="subpage1">
+            
+            
+            <div data-role="header" data-position="fixed">
+                <a href="index.html" data-icon="delete">Cancel</a>
+                <h1>PhoneGap + JQMobile</h1>
+            </div><!-- /header -->
+            
+            <div data-role="content" data-position="fixed">
+                
+                <div id="deviceready" class="blink">
+                    <p class="event listening">Connecting to Device</p>
+                    <p class="event received">Device is Ready</p>
+                </div>
+                
+                <h2>installed plugins</h2>
+                <ul data-role="listview" data-inset="true" data-filter="true">
+                    <li><a href="#">device</a></li>
+                    <li><a href="#">network-status</a></li>
+                    <li><a href="#">barcodescanner</a></li>
+                </ul>
+                
+                <a href="#" data-role="button" data-icon="star" id="scan">SCAN</a>
             </div>
-			<p><a href="#" class="topcoat-button" id="scan">SCAN</a></p>
+            
+            
+            <div data-role="footer" data-position="fixed">
+                <h4>Footer</h4>
+            </div><!-- /footer -->
+
         </div>
+        
         <script type="text/javascript" src="cordova.js"></script>
-<script type="text/javascript" src="barcodescanner.js"></script>
+        <script type="text/javascript" src="barcodescanner.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();
