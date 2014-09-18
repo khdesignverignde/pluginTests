@@ -364,7 +364,7 @@ var app = {
             console.log('getFile');
             app.output.string(window.appRootDir);
             //if(!file) file = "files/test.txt";
-            app.file.fs.root.getFile("test.txt", null, app.file.gotFileEntry, app.file.error);
+            app.file.fs.root.getFile("/test.txt", null, app.file.gotFileEntry, app.file.error);
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
