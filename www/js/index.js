@@ -343,37 +343,37 @@ var app = {
     file:{
         fs: null,
         error: function(e){
-            console.log('error');
-            alert('error: ' + e.target.error.code);
-            app.output.objectProperties(e.target.error);
+            console.log('error' + e);
+            app.output.objectProperties(e);
         },
         bindEvents: function(){
-            document.getElementById('fileGetFile').addEventListener('click', this.getFile, false);
+            document.getElementById('fileGetFile').addEventListener('click', app.file.getFile, false);
             
         },
         onDeviceReady: function(){
-            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.fileSystemReady, this.error);//TEMPORARY
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, app.file.fileSystemReady, app.file.error);//TEMPORARY
         },
         fileSystemReady: function(filesystem){
-            this.fs = filesystem;
+            app.file.fs = filesystem;
             app.output.string('fileSystemReady');
-            app.output.objectProperties(this.fs, 'filesystem' );
-            app.output.objectProperties(this.fs.root, 'filesystem.root' );
+            app.output.objectProperties(app.file.fs, 'filesystem' );
+            app.output.objectProperties(app.file.fs.root, 'filesystem.root' );
             
         },
         getFile: function(file){
             console.log('getFile');
+            app.output.string(window.appRootDir);
             //if(!file) file = "files/test.txt";
-            this.fs.root.getFile("files/test.txt", null, app.file.gotFileEntry, this.error);
+            app.file.fs.root.getFile("test.txt", null, app.file.gotFileEntry, app.file.error);
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
-            fileEntry.file(this.gotFile, this.error);
+            fileEntry.file(app.file.gotFile, app.file.error);
         },
         gotFile: function(file){
             console.log('gotFile');
-            this.readDataUrl(file);
-            this.readAsText(file);
+            app.file.readDataUrl(file);
+            app.file.readAsText(file);
         },
         readDataUrl: function(file) {
             console.log('readDataUrl');
