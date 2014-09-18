@@ -369,6 +369,8 @@ var app = {
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
+            app.output.objectProperties(fileEntry, 'fileEntry');
+            app.output.string(fileEntry.fullPath);
             fileEntry.file(app.file.gotFile, app.file.error);
         },
         gotFile: function(file){
