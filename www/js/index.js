@@ -347,7 +347,12 @@ var app = {
             app.output.objectProperties(e);
         },
         bindEvents: function(){
-            document.getElementById('fileGetFile').addEventListener('click', app.file.getFile, false);
+            document.getElementById('fileGetFileNull').addEventListener('click', function(){
+                app.file.getFile();
+            }, false);
+            document.getElementById('fileGetFileTest2').addEventListener('click', function(){
+                app.file.getFile('//files/test2.txt');
+            }, false);
             
         },
         onDeviceReady: function(){
@@ -364,8 +369,12 @@ var app = {
         getFile: function(file){
             console.log('getFile');
             app.output.string(window.appRootDir);
-            //if(!file) file = "files/test.txt";
-            app.file.fs.root.getFile("test.txt", {create:true, exclusive: false}, app.file.gotFileEntry, app.file.error);
+            var options = null;
+            if(!file){
+                file = "test.txt";
+                options ={create:true, exclusive: false};
+            }
+            app.file.fs.root.getFile("test.txt", options , app.file.gotFileEntry, app.file.error);
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
