@@ -1,21 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -27,6 +10,7 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        
         document.getElementById('scan').addEventListener('click', this.scan, false);
         document.getElementById('camera').addEventListener('click', this.camera, false);
         document.getElementById('device').addEventListener('click', this.device, false);
@@ -39,8 +23,10 @@ var app = {
         document.getElementById('notificationPrompt').addEventListener('click', this.notificationPrompt, false);
         document.getElementById('notificationBeep').addEventListener('click', this.notificationBeep, false);
         document.getElementById('showSplashscreen').addEventListener('click', this.showSplashscreen, false);
+        document.getElementById('globalization').addEventListener('click', this.globalization, false);
         $('#input .save').on('click', this.input.save);
         $('#input .load').on('click', this.input.load);
+        app.file.bindEvents();
     },
     // deviceready Event Handler
     //
@@ -48,6 +34,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        app.file.onDeviceReady();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -83,7 +70,7 @@ var app = {
             var str = name + ':<br>---------------------------------------------------------<br>';
             
             for(var i in obj){
-                str += i + ': ' + obj[i] + '<br>';
+                str += i + ': ' + ((typeof obj[i] !== 'function') ? obj[i] : '(function)')+ '<br>';
             }
             
             str += '<br><br>';
@@ -102,6 +89,7 @@ var app = {
         
         switch(method){
             case 'show':
+                console.log(window.localStorage);
                 break;
             case 'remove':
                 window.localStorage.removeItem(name);
@@ -210,6 +198,7 @@ var app = {
                 app.output.objectProperties(position, 'geolocation');
             },
             function(error){
+                app.output.objectProperties(error);
                 alert('code: '    + error.code    + '\n' +
                       'message: ' + error.message + '\n');
             }
@@ -231,7 +220,7 @@ var app = {
     },
     onbackbutton: function(){
         console.log('backbutton');
-        alert('you sure?');
+        app.output.string('backbutton');
     },
     onmenubutton: function(){
         console.log('menu');
@@ -301,5 +290,109 @@ var app = {
             navigator.splashscreen.hide();
         }, 2000);
         
+    },
+    globalization: function(){
+        navigator.globalization.getPreferredLanguage(
+            function (language) {app.output.objectProperties(language, 'getPreferredLanguage');},
+            function () {app.output.string('Error getting language');}
+        );
+
+        navigator.globalization.getLocaleName(
+            function (locale) {app.output.objectProperties(locale, 'getLocaleName');},
+            function () {app.output.string('Error getting locale\n');}
+        );
+        
+        navigator.globalization.dateToString(
+            new Date(),
+            function (date) { app.output.objectProperties(date, 'dateToString'); },
+            function () { app.output.string('Error getting dateString\n'); },
+            { formatLength: 'short', selector: 'date and time' }
+        );
+
+        navigator.globalization.getCurrencyPattern(
+            'USD',
+            function (pattern) { app.output.objectProperties(pattern, 'getCurrencyPattern USD'); },
+            function () { app.output.string('Error getting pattern\n'); }
+        );
+        navigator.globalization.getCurrencyPattern(
+            'EUR',
+            function (pattern) { app.output.objectProperties(pattern, 'getCurrencyPattern EUR'); },
+            function () { app.output.string('Error getting pattern\n'); }
+        );
+        navigator.globalization.getCurrencyPattern(
+            'JPY',
+            function (pattern) { app.output.objectProperties(pattern, 'getCurrencyPattern JPY'); },
+            function () { app.output.string('Error getting pattern\n'); }
+        );
+
+        navigator.globalization.getDateNames(
+            function (names) {
+                var str;
+                for (var i = 0; i < names.value.length; i++) {
+                    str +=  ' / ' + names.value[i];
+                }
+                
+                app.output.string('getDateNames: ' + str);
+            },
+            function () { app.output.string('Error getting names\n'); },
+            { type: 'wide', item: 'months' }
+        );
+        
+        /* ... */
+    },
+    file:{
+        fs: null,
+        error: function(e){
+            console.log('error');
+            alert('error: ' + e.target.error.code);
+            app.output.objectProperties(e.target.error);
+        },
+        bindEvents: function(){
+            document.getElementById('fileGetFile').addEventListener('click', this.getFile, false);
+            
+        },
+        onDeviceReady: function(){
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.fileSystemReady, this.error);//TEMPORARY
+        },
+        fileSystemReady: function(filesystem){
+            this.fs = filesystem;
+            app.output.string('fileSystemReady');
+            app.output.objectProperties(this.fs, 'filesystem' );
+            app.output.objectProperties(this.fs.root, 'filesystem.root' );
+            
+        },
+        getFile: function(file){
+            console.log('getFile');
+            //if(!file) file = "files/test.txt";
+            this.fs.root.getFile("files/test.txt", null, app.file.gotFileEntry, this.error);
+        },
+        gotFileEntry: function(fileEntry){
+            console.log('gotFileEntry');
+            fileEntry.file(this.gotFile, this.error);
+        },
+        gotFile: function(file){
+            console.log('gotFile');
+            this.readDataUrl(file);
+            this.readAsText(file);
+        },
+        readDataUrl: function(file) {
+            console.log('readDataUrl');
+            var reader = new FileReader();
+            reader.onloadend = function(evt) {
+                app.output.string("Read as data URL");
+                app.output.objectProperties(evt.target.result);
+                
+            };
+            reader.readAsDataURL(file);
+        },
+        readAsText: function(file) {
+            console.log('readAsText');
+            var reader = new FileReader();
+            reader.onloadend = function(evt) {
+                app.output.string("Read as text");
+                app.output.objectProperties(evt.target.result);
+            };
+            reader.readAsText(file);
+        }
     }
 };

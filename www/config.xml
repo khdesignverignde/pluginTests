@@ -25,6 +25,7 @@
     <preference name="android-installLocation" value="auto" />
     <preference name="SplashScreen" value="screen" /> 
     <preference name="SplashScreenDelay" value="10000" />
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     
     <gap:plugin name="org.apache.cordova.device" />
     <gap:plugin name="org.apache.cordova.network-information" />
@@ -38,6 +39,8 @@
     <gap:plugin name="org.apache.cordova.device-motion" />
     <gap:plugin name="org.apache.cordova.device-orientation" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
+    <gap:plugin name="org.apache.cordova.globalization" />
+    <gap:plugin name="org.apache.cordova.file" />
 	
     <icon src="icon.png" />
     <icon gap:platform="android" gap:qualifier="ldpi" src="res/icon/android/icon-36-ldpi.png" />

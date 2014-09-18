@@ -30,22 +30,24 @@
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.3.min.css" />
         
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <link rel="stylesheet" type="text/css" href="css/init.css" />
         
-        <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
-        <script src="js/jquery.mobile-1.4.3.min.js" type="text/javascript"></script>
         <title>PhoneGap + JQMobile</title>
     </head>
     <body>
-        
-        
-        <div data-role="page" id="subpage1">
-            
+        <div data-role="page" id="pluginTests">
             
             <div data-role="header" data-position="fixed">
-                <a href="index.html" data-icon="delete">Cancel</a>
+                <a href="#panelMenuLeft" data-icon="plus">Menu</a>
                 <h1>PhoneGap + JQMobile</h1>
             </div><!-- /header -->
+
+            <div data-role="panel" id="panelMenuLeft" data-position="left" data-display="reveal">
+                <ul data-role="listview">
+                    <li><a href="#pluginTests" data-transition="fade">pluginTests</a></li>
+                    <li><a href="#filePluginTests" data-transition="fade">filePluginTests</a></li>
+                    <li><a href="#jqueryMobileTests" data-transition="fade">jqueryMobileTests</a></li>
+                </ul>
+            </div>
             
             <div data-role="content" data-position="fixed">
                 
@@ -53,9 +55,9 @@
                     <p class="event listening">Connecting to Device</p>
                     <p class="event received">Device is Ready</p>
                 </div>
-                
+                 
                 <h2>installed plugins</h2>
-                <ul data-role="listview" data-inset="true" data-filter="true">
+                <ul data-role="listview" data-inset="true" data-filter="true" class="ui-listview">
                     <li><a href="#" id="device">device</a></li>
                     <li><a href="#" id="network-information">network-information</a></li>
                     <li><a href="#" id="scan">barcodescanner</a></li>
@@ -68,6 +70,8 @@
                     <li><a href="#" id="notificationPrompt">notificationPrompt</a></li>
                     <li><a href="#" id="notificationBeep">notificationBeep</a></li>
                     <li><a href="#" id="showSplashscreen">showSplashscreen</a></li>
+                    <li><a href="#" id="globalization">globalization</a></li> 
+                    <li><a href="#" id="fileGetFile">fileGetFile</a></li> 
                 </ul>
                 
                 <h2>device-motion</h2>
@@ -111,18 +115,96 @@
                 
             </div>
             
-            
             <div data-role="footer" data-position="fixed">
                 <h4>Footer</h4>
             </div><!-- /footer -->
 
         </div>
         
+        
+        <div data-role="page" id="jqueryMobileTests">
+            
+            <div data-role="header" data-position="fixed">
+                <a href="#panelMenuLeft" data-icon="plus">Menu</a>
+                <h1>PhoneGap + JQMobile</h1>
+            </div><!-- /header -->
+
+            <div data-role="panel" id="panelMenuLeft" data-position="left" data-display="reveal">
+                <ul data-role="listview">
+                    <li><a href="#pluginTests" data-transition="fade">pluginTests</a></li>
+                    <li><a href="#filePluginTests" data-transition="fade">filePluginTests</a></li>
+                    <li><a href="#jqueryMobileTests" data-transition="fade">jqueryMobileTests</a></li>
+                </ul>
+            </div>
+            
+            <div data-role="content">
+                
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <h4>Footer</h4>
+            </div><!-- /footer -->
+        </div>
+        
+        
+        <div data-role="page" id="filePluginTests">
+            
+            <div data-role="header" data-position="fixed">
+                <a href="#panelMenuLeft" data-icon="plus">Menu</a>
+                <h1>PhoneGap + JQMobile</h1>
+            </div><!-- /header -->
+
+            <div data-role="panel" id="panelMenuLeft" data-position="left" data-display="reveal">
+                <ul data-role="listview">
+                    <li><a href="#pluginTests" data-transition="fade">pluginTests</a></li>
+                    <li><a href="#filePluginTests" data-transition="fade">filePluginTests</a></li>
+                    <li><a href="#jqueryMobileTests" data-transition="fade">jqueryMobileTests</a></li>
+                </ul>
+            </div>
+            
+            <div data-role="content">     
+                
+                <h2>file-plugin-tests</h2>
+                <ul data-role="listview" data-inset="true" data-filter="true" class="ui-listview">
+                </ul>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <h4>Footer</h4>
+            </div><!-- /footer -->
+        </div>
+        
+        <script type='application/javascript' src='js/fastclick.js'></script>
+        <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile-1.4.3.min.js" type="text/javascript"></script>
+        
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
+        
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
-            app.initialize();
+            window.addEventListener('load', function() {
+                FastClick.attach(document.body);
+            }, false);
+            
+            
+            (function($){
+                app.initialize();
+                
+                
+                $(document).ready(function(){
+                    
+                    /*$.get('templates/top.html', function(html){
+                        $('div[data-role="page"]')
+                                .prepend(html)
+                                .trigger('create'); 
+                    });
+                    
+                    $.get('templates/bottom.html', function(html){
+                        $('div[data-role="page"]')
+                                .append(html)
+                                .trigger('create'); 
+                    });*/
+                });
+            }($ || jQuery));
         </script>
     </body>
 </html>
