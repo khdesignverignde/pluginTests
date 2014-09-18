@@ -358,13 +358,14 @@ var app = {
             app.output.string('fileSystemReady');
             app.output.objectProperties(app.file.fs, 'filesystem' );
             app.output.objectProperties(app.file.fs.root, 'filesystem.root' );
+            app.output.string('filesystem.root.toURL(): ' + app.file.fs.root.toURL()  );
             
         },
         getFile: function(file){
             console.log('getFile');
             app.output.string(window.appRootDir);
             //if(!file) file = "files/test.txt";
-            app.file.fs.root.getFile("/test.txt", null, app.file.gotFileEntry, app.file.error);
+            app.file.fs.root.getFile("test.txt", {create:true, exclusive: false}, app.file.gotFileEntry, app.file.error);
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
