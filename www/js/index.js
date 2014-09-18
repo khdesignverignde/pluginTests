@@ -374,7 +374,7 @@ var app = {
                 file = "test.txt";
                 options ={create:true, exclusive: false};
             }
-            app.file.fs.root.getFile("test.txt", options , app.file.gotFileEntry, app.file.error);
+            app.file.fs.root.getFile(file, options , app.file.gotFileEntry, app.file.error);
         },
         gotFileEntry: function(fileEntry){
             console.log('gotFileEntry');
